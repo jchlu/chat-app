@@ -12,8 +12,16 @@ const io = socketio(server)
 
 app.use(express.static(staticPath))
 
-io.on('connection', () => {
-  console.log('New websocket client connection')
+let count = 0
+
+io.on('connection', socket => {
+  // only need to let the current client know the count so "socket" is used
+  socket.emit('countUpdated', count)
+  socket.on('increment', () => {
+    count++
+    // need to let *all* clients know the count, so "io" is used to emit
+    io.emit('countUpdated', count)
+  })
 })
 
 module.exports = {
