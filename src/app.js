@@ -15,20 +15,24 @@ app.use(express.static(staticPath))
 
 io.on('connection', socket => {
   socket.emit('welcomeMessage', welcomeMessage)
-  socket.broadcast.emit('broadcast', 'A new user joined')
-  socket.on('message', message => {
-    io.emit('message', message)
+  socket.broadcast.emit('console', 'A new user joined')
+  socket.on('clientMessage', (message, callback) => {
+    io.emit('serverMessage', message)
+    const ack = `Message received at ${Date.now()}`
+    callback(ack)
   })
 
   socket.on('disconnect', () => {
     // emit user disconnected message
-    io.emit('broadcast', 'A user disconnected.')
+    io.emit('console', 'A user disconnected.')
   })
 
-  socket.on('position', location => {
+  socket.on('position', (location, callback) => {
     const { lat, long } = location
     const message = `https://google.com/maps?=${lat},${long}`
-    socket.broadcast.emit('broadcast', message)
+    io.emit('console', message)
+    const ack = 'Location was received and shared'
+    callback(ack)
   })
 })
 
