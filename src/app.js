@@ -24,6 +24,12 @@ io.on('connection', socket => {
     // emit user disconnected message
     io.emit('broadcast', 'A user disconnected.')
   })
+
+  socket.on('position', location => {
+    const { lat, long } = location
+    const message = `https://google.com/maps?=${lat},${long}`
+    socket.broadcast.emit('broadcast', message)
+  })
 })
 
 module.exports = {
