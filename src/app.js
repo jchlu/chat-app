@@ -7,20 +7,22 @@ const staticPath = path.join(__dirname, '../public')
 
 const app = express()
 const server = http.createServer(app)
-
 const io = socketio(server)
+
+const welcomeMessage = 'Welcome to the Chat App'
 
 app.use(express.static(staticPath))
 
-let count = 0
-
 io.on('connection', socket => {
-  // only need to let the current client know the count so "socket" is used
-  socket.emit('countUpdated', count)
-  socket.on('increment', () => {
-    count++
-    // need to let *all* clients know the count, so "io" is used to emit
-    io.emit('countUpdated', count)
+  socket.emit('welcomeMessage', welcomeMessage)
+  socket.broadcast.emit('broadcast', 'A new user joined')
+  socket.on('message', message => {
+    io.emit('message', message)
+  })
+
+  socket.on('disconnect', () => {
+    // emit user disconnected message
+    io.emit('broadcast', 'A user disconnected.')
   })
 })
 
