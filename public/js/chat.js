@@ -20,23 +20,36 @@ socket.on('broadcast', broadcast => {
 })
 
 // Add event listener on the id and emit the name to the server
-document.querySelector('#chat-form').addEventListener('submit', event => {
+const chatForm = document.querySelector('#chat-form')
+const chatInput = chatForm.querySelector('input')
+const chatButton = chatForm.querySelector('button')
+chatForm.addEventListener('submit', event => {
   event.preventDefault()
   const message = event.target.message.value
   if (!message.length) { return null }
+  // disable message sending until server responds
+  chatButton.setAttribute('disabled', 'disabled')
   socket.emit('clientMessage', message, ack => {
+    // re-enable send button, blank input anf focus the message input
+    chatButton.removeAttribute('disabled')
+    chatInput.value = ''
+    chatInput.focus()
     console.log('message received by the server')
     console.log(`Ack message from server: ${ack}`)
   })
-  event.target.message.value = ''
 })
 
-document.querySelector('#send-location').addEventListener('click', event => {
+const locationButton = document.querySelector('#send-location')
+locationButton.addEventListener('click', event => {
   event.preventDefault()
   if (!navigator.geolocation) { return alert('Geolocation is not available in your browser') }
+  // disable location button to prevent sending multiple times if delayed
+  locationButton.setAttribute('disabled', 'disabled')
   navigator.geolocation.getCurrentPosition(position => {
     const { latitude: lat, longitude: long } = position.coords
     socket.emit('position', { lat, long }, ack => {
+      // re-enable location button
+      locationButton.removeAttribute('disabled')
       console.log(`Server says: ${ack}`)
     })
   })
