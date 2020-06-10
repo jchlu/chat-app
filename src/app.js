@@ -2,6 +2,7 @@ const path = require('path')
 const http = require('http')
 const express = require('express')
 const socketio = require('socket.io')
+const { generateMessage, generatePositionMessage } = require('./utils/messages')
 
 const staticPath = path.join(__dirname, '../public')
 
@@ -14,23 +15,21 @@ const welcomeMessage = 'Welcome to the Chat App'
 app.use(express.static(staticPath))
 
 io.on('connection', socket => {
-  socket.emit('welcomeMessage', welcomeMessage)
-  socket.broadcast.emit('console', 'A new user joined')
+  socket.emit('serverMessage', generateMessage(welcomeMessage))
+  socket.broadcast.emit('serverMessage', generateMessage('A new user joined'))
   socket.on('clientMessage', (message, callback) => {
-    io.emit('serverMessage', message)
+    io.emit('message', generateMessage(message))
     const ack = `Message received at ${Date.now()}`
     callback(ack)
   })
 
   socket.on('disconnect', () => {
     // emit user disconnected message
-    io.emit('console', 'A user disconnected.')
+    io.emit('serverMessage', generateMessage('A user disconnected.'))
   })
 
   socket.on('position', (location, callback) => {
-    const { lat, long } = location
-    const message = `https://google.com/maps?=${lat},${long}`
-    io.emit('console', message)
+    io.emit('position', generatePositionMessage(location))
     const ack = 'Location was received and shared'
     callback(ack)
   })

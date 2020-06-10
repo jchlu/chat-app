@@ -1,26 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat App</title>
 </head>
+
 <body>
     <h1>Chat App</h1>
     <button id='send-location'>Send Location</button>
-    <div id='socket'></div>
+    <div id='server-messages'></div>
     <form action="submit" id="chat-form">
         <input type="text" name="message">
         <button type="submit">Send</button>
     </form>
     <div id="messages" style="white-space: pre;"></div>
+    <!-- Templates -->
+    <script id="message-template" type="text/html">
+        <html>
+            <div id="message">{{created}}: {{message}}</div>
+        </html>
+    </script>
+
+    <script id="position-template" type="text/html">
+        <html>
+            <div>
+                <p>
+                    {{created}}: <a href="{{url}}" target="_blank">User Location</a>
+                </p>
+            </div>
+        </html>
+    </script>
+    <!-- External Libraries -->
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/moment.min.js"></script>
     <script src="/js/mustache.min.js"></script>
     <script src="/js/qs.min.js"></script>
+    <!-- Internal Scripts -->
     <script src="/js/chat.js"></script>
 </body>
 <footer>
-    <div id="broadcasts" style="white-space: pre;"></div>
+    <!-- <div id="broadcasts" style="white-space: pre;"></div> -->
 </footer>
+
 </html>
