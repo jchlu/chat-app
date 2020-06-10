@@ -27,7 +27,10 @@ socket.on('serverMessage', ({ created, message }) => {
 
 // listen for the incoming event emitted by the server
 socket.on('message', ({ created, message }) => {
-  const html = Mustache.render(messageTemplate, { created, message })
+  const html = Mustache.render(messageTemplate, {
+    created: moment(created).format('h:mm a'),
+    message
+  })
   messages.insertAdjacentHTML('beforebegin', html)
 })
 
