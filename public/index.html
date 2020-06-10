@@ -10,54 +10,18 @@
     </head>
 
     <body>
-        <div class="chat">
-            <div class="chat__sidebar">
-                <!-- sidebar content -->
-            </div>
-            <div class="chat__main">
-                <!-- main content -->
-                <div id="server-messages"></div>
-                <div id="messages" class="chat__messages"></div>
-                <div class="compose">
-                    <form action="submit" id="chat-form">
-                        <input type="text" name="message">
-                        <button type="submit">Send</button>
-                    </form>
-                    <button id="send-location">Send Location</button>
-                </div>
+        <div class="centered-form">
+            <div class="centered-form__box">
+                <h1>Join</h1>
+                <form action="/chat.html">
+                    <label for="name">Display name</label>
+                    <input type="text" name="name" id="name" placeholder="Display name" required>
+                    <label for="room">Room</label>
+                    <input type="text" name="room" id="room" placeholder="Room" required>
+                    <button>Join</button>
+                </form>
             </div>
         </div>
-
-        <!-- Templates -->
-        <script id="message-template" type="text/html">
-            <div class="message">
-                <p>
-                    <span class="message__name">Some User Name</span>
-                    <span class="message__meta">{{created}}</span>
-                </p>
-                <p>{{message}}</p>
-            </div>
-        </script>
-
-        <script id="position-template" type="text/html">
-            <div class="message">
-                <p>
-                    <span class="message__name">Some User Name</span>
-                    <span class="message__meta">{{created}}</span>
-                </p>
-                <p><a href="{{url}}" target="_blank">User Location</a></p>
-            </div>
-        </script>
-        <!-- External Libraries -->
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="/js/moment.min.js"></script>
-        <script src="/js/mustache.min.js"></script>
-        <script src="/js/qs.min.js"></script>
-        <!-- Internal Scripts -->
-        <script src="/js/chat.js"></script>
-        <footer>
-            <!-- <div id="broadcasts" style="white-space: pre;"></div> -->
-        </footer>
     </body>
 
 </html>
