@@ -30,14 +30,22 @@
 
         <!-- Templates -->
         <script id="message-template" type="text/html">
-            <div id="message">
-                {{created}}: {{message}}
+            <div class="message">
+                <p>
+                    <span class="message__name">Some User Name</span>
+                    <span class="message__meta">{{created}}</span>
+                </p>
+                <p>{{message}}</p>
             </div>
         </script>
 
         <script id="position-template" type="text/html">
-            <div>
-                {{created}}: <a href="{{url}}" target="_blank">User Location</a>
+            <div class="message">
+                <p>
+                    <span class="message__name">Some User Name</span>
+                    <span class="message__meta">{{created}}</span>
+                </p>
+                <p><a href="{{url}}" target="_blank">User Location</a></p>
             </div>
         </script>
         <!-- External Libraries -->
