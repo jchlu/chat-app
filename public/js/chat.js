@@ -1,5 +1,7 @@
 const socket = io()
 
+const { name, room } = Qs.parse(location.search, { ignoreQueryPrefix: true })
+
 // Elements
 const chatForm = document.querySelector('#chat-form')
 const chatInput = chatForm.querySelector('input')
@@ -75,6 +77,12 @@ locationButton.addEventListener('click', event => {
     })
   })
 })
+
+socket.emit('join', { name, room }, (error) => {
+  // display error to the user
+  console.error(error)
+})
+
 // Add event listener on the id and emit the name to the server
 /*
 document.querySelector('#increment').addEventListener('click', () => {

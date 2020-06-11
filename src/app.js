@@ -3,6 +3,7 @@ const http = require('http')
 const express = require('express')
 const socketio = require('socket.io')
 const { generateMessage, generatePositionMessage } = require('./utils/messages')
+const { addUser, getUser, getUsersInRoom, removeUser } = require('./utils/users')
 
 const staticPath = path.join(__dirname, '../public')
 
@@ -15,8 +16,17 @@ const welcomeMessage = 'Welcome to the Chat App'
 app.use(express.static(staticPath))
 
 io.on('connection', socket => {
-  socket.emit('serverMessage', generateMessage(welcomeMessage))
-  socket.broadcast.emit('serverMessage', generateMessage('A new user joined'))
+  socket.on('join', ({ name, room }, callback) => {
+    const { error, user } = addUser({ id: socket.id, name, room })
+    if (error) {
+      return callback(error)
+    }
+    socket.join(user.room)
+    socket.emit('serverMessage', generateMessage(welcomeMessage))
+    socket.to(user.room).broadcast.emit('serverMessage', generateMessage(`user ${user.name} joined the ${user.room} Room`))
+    callback()
+  })
+
   socket.on('clientMessage', (message, callback) => {
     io.emit('message', generateMessage(message))
     const ack = `Message received at ${Date.now()}`
@@ -24,6 +34,8 @@ io.on('connection', socket => {
   })
 
   socket.on('disconnect', () => {
+    // removeUser , if it works then send message below
+    // TODO: continue at 14:10 remaining in _20 video
     // emit user disconnected message
     io.emit('serverMessage', generateMessage('A user disconnected.'))
   })
