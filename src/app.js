@@ -23,7 +23,7 @@ io.on('connection', socket => {
     }
     socket.join(user.room)
     socket.emit('serverMessage', generateMessage(welcomeMessage))
-    socket.to(user.room).broadcast.emit('serverMessage', generateMessage(`user ${user.name} joined the ${user.room} Room`))
+    socket.to(user.room).broadcast.emit('serverMessage', generateMessage(`user ${user.name} joined the ${user.room} room`))
     callback()
   })
 
@@ -36,8 +36,11 @@ io.on('connection', socket => {
   socket.on('disconnect', () => {
     // removeUser , if it works then send message below
     // TODO: continue at 14:10 remaining in _20 video
+    const user = removeUser(socket.id)
+    if (user) {
+      io.to(user.room).emit('serverMessage', generateMessage(`${user.name} has disconnected.`))
+    }
     // emit user disconnected message
-    io.emit('serverMessage', generateMessage('A user disconnected.'))
   })
 
   socket.on('position', (location, callback) => {
