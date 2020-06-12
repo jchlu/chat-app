@@ -16,16 +16,6 @@ const messageTemplate = document.querySelector('#message-template').innerHTML
 const positionTemplate = document.querySelector('#position-template').innerHTML
 const sidebarTemplate = document.querySelector('#sidebar-template').innerHTML
 
-// listen for the welcome message emitted by the server
-socket.on('serverMessage', ({ name, created, message }) => {
-  const html = Mustache.render(messageTemplate, {
-    name,
-    created: moment(created).format('h:mm a'),
-    message
-  })
-  serverMessages.insertAdjacentHTML('beforebegin', html)
-})
-
 // listen for the incoming event emitted by the server
 socket.on('message', ({ name, created, message }) => {
   const html = Mustache.render(messageTemplate, {
@@ -48,8 +38,6 @@ socket.on('position', ({ name, created, url }) => {
 
 // listen for the roomData event
 socket.on('roomData', ({ room, users }) => {
-  console.log(room)
-  console.table(users)
   const html = Mustache.render(sidebarTemplate, {
     room,
     users
