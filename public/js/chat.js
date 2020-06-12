@@ -19,8 +19,9 @@ socket.on('console', ({ created, message }) => {
 })
 
 // listen for the welcome message emitted by the server
-socket.on('serverMessage', ({ created, message }) => {
+socket.on('serverMessage', ({ name, created, message }) => {
   const html = Mustache.render(messageTemplate, {
+    name,
     created: moment(created).format('h:mm a'),
     message
   })
@@ -28,8 +29,9 @@ socket.on('serverMessage', ({ created, message }) => {
 })
 
 // listen for the incoming event emitted by the server
-socket.on('message', ({ created, message }) => {
+socket.on('message', ({ name, created, message }) => {
   const html = Mustache.render(messageTemplate, {
+    name,
     created: moment(created).format('h:mm a'),
     message
   })
@@ -37,8 +39,9 @@ socket.on('message', ({ created, message }) => {
 })
 
 // listen for the position event emitted by the server
-socket.on('position', ({ created, url }) => {
+socket.on('position', ({ name, created, url }) => {
   const html = Mustache.render(positionTemplate, {
+    name,
     created: moment(created).format('h:mm a'),
     url
   })
@@ -80,12 +83,8 @@ locationButton.addEventListener('click', event => {
 
 socket.emit('join', { name, room }, (error) => {
   // display error to the user
-  console.error(error)
+  if (error) {
+    alert(error)
+    location.href = '/'
+  }
 })
-
-// Add event listener on the id and emit the name to the server
-/*
-document.querySelector('#increment').addEventListener('click', () => {
-  socket.emit('increment')
-})
- */

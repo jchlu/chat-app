@@ -32,8 +32,8 @@
         <script id="message-template" type="text/html">
             <div class="message">
                 <p>
-                    <span class="message__name">Some User Name</span>
-                    <span class="message__meta">{{created}}</span>
+                    <span class="message__name">{{name}}</span>
+                    <span class="message__meta">at: {{created}}</span>
                 </p>
                 <p>{{message}}</p>
             </div>
@@ -42,10 +42,10 @@
         <script id="position-template" type="text/html">
             <div class="message">
                 <p>
-                    <span class="message__name">Some User Name</span>
-                    <span class="message__meta">{{created}}</span>
+                    <span class="message__name">{{name}}</span>
+                    <span class="message__meta">at: {{created}}</span>
                 </p>
-                <p><a href="{{url}}" target="_blank">User Location</a></p>
+                <p><a href="{{url}}" target="_blank">Location</a></p>
             </div>
         </script>
         <!-- External Libraries -->

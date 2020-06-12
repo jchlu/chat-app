@@ -22,29 +22,31 @@ io.on('connection', socket => {
       return callback(error)
     }
     socket.join(user.room)
-    socket.emit('serverMessage', generateMessage(welcomeMessage))
-    socket.to(user.room).broadcast.emit('serverMessage', generateMessage(`user ${user.name} joined the ${user.room} room`))
+    socket.emit('serverMessage', generateMessage('Admin', welcomeMessage))
+    socket.to(user.room).broadcast.emit('serverMessage', generateMessage(user.name, `joined the ${user.room} room`))
     callback()
   })
 
+  // Listen for messages coming in from the client
   socket.on('clientMessage', (message, callback) => {
-    io.emit('message', generateMessage(message))
+    const { name, room } = getUser(socket.id)
+    io.to(room).emit('message', generateMessage(name, message))
     const ack = `Message received at ${Date.now()}`
     callback(ack)
   })
 
   socket.on('disconnect', () => {
     // removeUser , if it works then send message below
-    // TODO: continue at 14:10 remaining in _20 video
     const user = removeUser(socket.id)
     if (user) {
-      io.to(user.room).emit('serverMessage', generateMessage(`${user.name} has disconnected.`))
+      io.to(user.room).emit('serverMessage', generateMessage(user.name, 'left the chat room.'))
     }
     // emit user disconnected message
   })
 
   socket.on('position', (location, callback) => {
-    io.emit('position', generatePositionMessage(location))
+    const { name, room } = getUser(socket.id)
+    io.to(room).emit('position', generatePositionMessage(name, location))
     const ack = 'Location was received and shared'
     callback(ack)
   })
