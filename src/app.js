@@ -23,7 +23,7 @@ io.on('connection', socket => {
     }
     socket.join(user.room)
     socket.emit('serverMessage', generateMessage('Admin', welcomeMessage))
-    socket.to(user.room).broadcast.emit('serverMessage', generateMessage(user.name, `joined the ${user.room} room`))
+    socket.to(user.room).broadcast.emit('serverMessage', generateMessage('Admin', `${user.name} joined the ${user.room} room`))
     callback()
   })
 
@@ -39,7 +39,7 @@ io.on('connection', socket => {
     // removeUser , if it works then send message below
     const user = removeUser(socket.id)
     if (user) {
-      io.to(user.room).emit('serverMessage', generateMessage(user.name, 'left the chat room.'))
+      io.to(user.room).emit('serverMessage', generateMessage('Admin', `${user.name} left the chat room.`))
     }
     // emit user disconnected message
   })
