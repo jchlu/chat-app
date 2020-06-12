@@ -6,17 +6,15 @@ const { name, room } = Qs.parse(location.search, { ignoreQueryPrefix: true })
 const chatForm = document.querySelector('#chat-form')
 const chatInput = chatForm.querySelector('input')
 const chatButton = chatForm.querySelector('button')
-const serverMessages = document.querySelector('#server-messages')
+const locationButton = document.querySelector('#send-location')
 const messages = document.querySelector('#messages')
+const serverMessages = document.querySelector('#server-messages')
+const sidebar = document.querySelector('#sidebar')
 
 // Templates
 const messageTemplate = document.querySelector('#message-template').innerHTML
 const positionTemplate = document.querySelector('#position-template').innerHTML
-
-// Listen for messages to be logged to the console
-socket.on('console', ({ created, message }) => {
-  console.log(created, message)
-})
+const sidebarTemplate = document.querySelector('#sidebar-template').innerHTML
 
 // listen for the welcome message emitted by the server
 socket.on('serverMessage', ({ name, created, message }) => {
@@ -48,6 +46,17 @@ socket.on('position', ({ name, created, url }) => {
   messages.insertAdjacentHTML('beforebegin', html)
 })
 
+// listen for the roomData event
+socket.on('roomData', ({ room, users }) => {
+  console.log(room)
+  console.table(users)
+  const html = Mustache.render(sidebarTemplate, {
+    room,
+    users
+  })
+  sidebar.innerHTML = html
+})
+
 // Add event listener on the id and emit the name to the server
 chatForm.addEventListener('submit', event => {
   event.preventDefault()
@@ -65,7 +74,6 @@ chatForm.addEventListener('submit', event => {
   })
 })
 
-const locationButton = document.querySelector('#send-location')
 locationButton.addEventListener('click', event => {
   event.preventDefault()
   if (!navigator.geolocation) { return alert('Geolocation is not available in your browser') }

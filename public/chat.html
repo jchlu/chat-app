@@ -11,7 +11,7 @@
 
     <body>
         <div class="chat">
-            <div class="chat__sidebar">
+            <div id="sidebar" class="chat__sidebar">
                 <!-- sidebar content -->
             </div>
             <div class="chat__main">
@@ -29,6 +29,16 @@
         </div>
 
         <!-- Templates -->
+        <script id="sidebar-template" type="text/html">
+            <h1 class="room-title">{{room}}</h1>
+            <h3 class="list-title">Users</h3>
+            <ul class="users">
+                {{#users}}
+                    <li>{{name}}</li>
+                {{/users}}
+            </ul>
+        </script>
+
         <script id="message-template" type="text/html">
             <div class="message">
                 <p>
