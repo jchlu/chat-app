@@ -8,13 +8,38 @@ const chatInput = chatForm.querySelector('input')
 const chatButton = chatForm.querySelector('button')
 const locationButton = document.querySelector('#send-location')
 const messages = document.querySelector('#messages')
-const serverMessages = document.querySelector('#server-messages')
 const sidebar = document.querySelector('#sidebar')
 
 // Templates
 const messageTemplate = document.querySelector('#message-template').innerHTML
 const positionTemplate = document.querySelector('#position-template').innerHTML
 const sidebarTemplate = document.querySelector('#sidebar-template').innerHTML
+
+const autoscroll = () => {
+  // just to be defensive...
+  if (messages.lastElementChild) {
+    // new message element
+    const newMessage = messages.lastElementChild
+    // height of new message, including the bottom margin
+    // styles for the new message
+    const newMessageStyle = getComputedStyle(newMessage)
+    // bottom margin as an integer
+    const marginHeight = parseInt(newMessageStyle.marginBottom)
+    // total new message height
+    const newMessageHeight = newMessage.offsetHeight + marginHeight
+    // visible height of messages container
+    const visibleHeight = messages.offsetHeight
+    // total height of messages container
+    const containerHeight = messages.scrollHeight
+    // scroll position at the moment
+    const scrollOffset = messages.scrollTop + visibleHeight
+    // if container height - new message height is less than the offset, we're at the bottom
+    if (containerHeight - newMessageHeight <= scrollOffset) {
+      // so, autoscroll to make message visible
+      messages.scrollTop = messages.scrollHeight
+    }
+  }
+}
 
 // listen for the incoming event emitted by the server
 socket.on('message', ({ name, created, message }) => {
@@ -23,7 +48,8 @@ socket.on('message', ({ name, created, message }) => {
     created: moment(created).format('h:mm a'),
     message
   })
-  messages.insertAdjacentHTML('beforebegin', html)
+  messages.insertAdjacentHTML('beforeend', html)
+  autoscroll()
 })
 
 // listen for the position event emitted by the server
@@ -33,7 +59,8 @@ socket.on('position', ({ name, created, url }) => {
     created: moment(created).format('h:mm a'),
     url
   })
-  messages.insertAdjacentHTML('beforebegin', html)
+  messages.insertAdjacentHTML('beforeend', html)
+  autoscroll()
 })
 
 // listen for the roomData event
