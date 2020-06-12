@@ -15,7 +15,7 @@ const welcomeMessage = 'Welcome to the Chat App'
 
 app.use(express.static(staticPath))
 
-io.on('connection', socket => {
+io.on('connection', (socket) => {
   socket.on('join', ({ name, room }, callback) => {
     const { error, user } = addUser({ id: socket.id, name, room })
     if (error) {
@@ -33,7 +33,12 @@ io.on('connection', socket => {
 
   // Listen for messages coming in from the client
   socket.on('clientMessage', (message, callback) => {
-    const { name, room } = getUser(socket.id)
+    const user = getUser(socket.id)
+    if (!user) {
+      const error = { error: 'Something went wrong. Please refresh the browser' }
+      return callback(error)
+    }
+    const { name, room } = user
     io.to(room).emit('message', generateMessage(name, message))
     const ack = `Message received at ${Date.now()}`
     callback(ack)
@@ -54,7 +59,12 @@ io.on('connection', socket => {
   })
 
   socket.on('position', (location, callback) => {
-    const { name, room } = getUser(socket.id)
+    const user = getUser(socket.id)
+    if (!user) {
+      const error = { error: 'Something went wrong. Please refresh the browser' }
+      return callback(error)
+    }
+    const { name, room } = user
     io.to(room).emit('position', generatePositionMessage(name, location))
     const ack = 'Location was received and shared'
     callback(ack)

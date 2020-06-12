@@ -73,33 +73,40 @@ socket.on('roomData', ({ room, users }) => {
 })
 
 // Add event listener on the id and emit the name to the server
-chatForm.addEventListener('submit', event => {
+chatForm.addEventListener('submit', (event) => {
   event.preventDefault()
   const message = event.target.message.value
   if (!message.length) { return null }
   // disable message sending until server responds
   chatButton.setAttribute('disabled', 'disabled')
-  socket.emit('clientMessage', message, ack => {
+  socket.emit('clientMessage', message, (ack) => {
     // re-enable send button, blank input anf focus the message input
     chatButton.removeAttribute('disabled')
     chatInput.value = ''
     chatInput.focus()
-    console.log('message received by the server')
-    console.log(`Ack message from server: ${ack}`)
+    if (ack.error) {
+      alert(ack.error)
+    } else {
+      console.log(`Server says: ${ack}`)
+    }
   })
 })
 
-locationButton.addEventListener('click', event => {
+locationButton.addEventListener('click', (event) => {
   event.preventDefault()
   if (!navigator.geolocation) { return alert('Geolocation is not available in your browser') }
   // disable location button to prevent sending multiple times if delayed
   locationButton.setAttribute('disabled', 'disabled')
-  navigator.geolocation.getCurrentPosition(position => {
+  navigator.geolocation.getCurrentPosition((position) => {
     const { latitude: lat, longitude: long } = position.coords
-    socket.emit('position', { lat, long }, ack => {
+    socket.emit('position', { lat, long }, (ack) => {
       // re-enable location button
       locationButton.removeAttribute('disabled')
-      console.log(`Server says: ${ack}`)
+      if (ack.error) {
+        alert(ack.error)
+      } else {
+        console.log(`Server says: ${ack}`)
+      }
     })
   })
 })
